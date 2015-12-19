@@ -12,7 +12,7 @@ let
 
     isExecutable = true;
 
-    inherit (pkgs) python gummiboot;
+    inherit (pkgs) python gummiboot binutils sbsigntool;
 
     nix = config.nix.package;
 
