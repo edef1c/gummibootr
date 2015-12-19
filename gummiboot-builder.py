@@ -49,6 +49,7 @@ def add_entry(generation):
         db_sign(tmp_path, entry_file)
     finally:
         os.unlink(tmp_path)
+    return entry_file
 
 def write_loader_conf(generation):
     with open("@efiSysMountPoint@/loader/loader.conf.tmp", 'w') as f:
@@ -90,8 +91,11 @@ mkdir_p("@efiSysMountPoint@/efi/linux")
 mkdir_p("@efiSysMountPoint@/loader")
 
 gens = get_generations("system")
-# TODO: bring remove_old_entries back
+live = set()
 for gen in gens:
-    add_entry(gen)
+    live.add(add_entry(gen))
     if os.readlink(system_dir(gen)) == args.default_config:
         write_loader_conf(gen)
+dead = set(glob.iglob("@efiSysMountPoint@/efi/linux/nixos-generation-[1-9]*.efi")) - live
+for path in dead:
+    os.unlink(dead)
