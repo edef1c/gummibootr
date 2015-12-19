@@ -15,12 +15,14 @@ def copy_if_not_exists(source, dest):
 system_dir = lambda generation: "/nix/var/nix/profiles/system-%d-link" % (generation)
 
 def db_sign(src, dst):
+    tmp = "%s.signed" % (dst)
     subprocess.check_call([
         "@sbsigntool@/bin/sbsign",
         "--key",  "/etc/uefi/DB.key",
         "--cert", "/etc/uefi/DB.crt",
-        src, "--output", dst
+        src, "--output", tmp
     ])
+    os.rename(tmp, dst)
 
 def add_entry(generation):
     entry_file = "@efiSysMountPoint@/efi/linux/nixos-generation-%d.efi" % (generation)
