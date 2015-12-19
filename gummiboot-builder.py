@@ -46,7 +46,7 @@ def add_entry(generation):
             "--add-section", ".cmdline=%s"       % f_kernel_params.name, "--change-section-vma", ".cmdline=0x30000",
             "--add-section", ".linux=%s/kernel"  % generation_dir,       "--change-section-vma", ".linux=0x40000",
             "--add-section", ".initrd=%s/initrd" % generation_dir,       "--change-section-vma", ".initrd=0x3000000",
-            "@gummiboot@/lib/gummiboot/linuxx64.efi.stub", tmp_path
+            "@gummiboot@/lib/gummiboot/linux@efiArch@.efi.stub", tmp_path
         ])
     subprocess.check_call(["@binutils@/bin/strip", tmp_path])
     try:
@@ -89,7 +89,7 @@ if "@canTouchEfiVariables@" == "1":
 else:
     mkdir_p("@efiSysMountPoint@/efi/boot")
     # XXX: bootia32.efi is apparently a thing if you're on 32-bit UEFI. Does anyone even implement that?
-    db_sign("@gummiboot@/lib/gummiboot/gummibootx64.efi", "@efiSysMountPoint@/efi/boot/bootx64.efi")
+    db_sign("@gummiboot@/lib/gummiboot/gummiboot@efiArch@.efi", "@efiSysMountPoint@/efi/boot/boot@efiArch@.efi")
 
 mkdir_p("@efiSysMountPoint@/efi/linux")
 mkdir_p("@efiSysMountPoint@/loader")

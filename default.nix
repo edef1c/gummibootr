@@ -19,6 +19,10 @@ let
     timeout = if cfg.timeout != null then cfg.timeout else "";
 
     inherit (efi) efiSysMountPoint canTouchEfiVariables;
+
+    efiArch = if stdenv.system == "x86_64-linux" then "x64"
+         else if stdenv.system == "i686-linux" then "ia32"
+         else throw "Unsupported system: ${stdenv.system}";
   };
 in {
   options.boot.loader.gummibootr = {
