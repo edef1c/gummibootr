@@ -14,6 +14,14 @@ def copy_if_not_exists(source, dest):
 
 system_dir = lambda generation: "/nix/var/nix/profiles/system-%d-link" % (generation)
 
+def db_sign(src, dst):
+    subprocess.check_call([
+        "@sbsigntool@/bin/sbsign",
+        "--key",  "/etc/uefi/DB.key",
+        "--cert", "/etc/uefi/DB.crt",
+        src, "--output", dst
+    ])
+
 def add_entry(generation):
     entry_file = "@efiSysMountPoint@/efi/linux/nixos-generation-%d.efi" % (generation)
     generation_dir = os.readlink(system_dir(generation))
@@ -40,12 +48,7 @@ def add_entry(generation):
         ])
     subprocess.check_call(["@binutils@/bin/strip", tmp_path])
     try:
-        subprocess.check_call([
-            "@sbsigntool@/bin/sbsign",
-            "--key",  "/etc/uefi/DB.key",
-            "--cert", "/etc/uefi/DB.crt",
-            tmp_path, "--output", entry_file
-        ])
+        db_sign(tmp_path, entry_file)
     finally:
         os.unlink(tmp_path)
 
@@ -80,12 +83,14 @@ parser.add_argument('default_config', metavar='DEFAULT-CONFIG', help='The defaul
 args = parser.parse_args()
 
 # We deserve our own env var!
-if os.getenv("NIXOS_INSTALL_GRUB") == "1" and false: # TODO: make sure this doesn't wipe out signed things
+if os.getenv("NIXOS_INSTALL_GRUB") == "1":
     if "@canTouchEfiVariables@" == "1":
-        subprocess.check_call(["@gummiboot@/bin/gummiboot", "--path=@efiSysMountPoint@", "install"])
+        raise NotImplementedError("don't know how to twiddle EFI variables")
     else:
-        subprocess.check_call(["@gummiboot@/bin/gummiboot", "--path=@efiSysMountPoint@", "--no-variables", "install"])
+        # XXX: bootia32.efi is apparently a thing if you're on 32-bit UEFI. Does anyone even implement that?
+        db_sign("@gummiboot@/lib/gummiboot/gummibootx64.efi", "@efiSysMountPoint@/efi/boot/bootx64.efi")
 
+mkdir_p("@efiSysMountPoint@/efi/boot")
 mkdir_p("@efiSysMountPoint@/efi/linux")
 mkdir_p("@efiSysMountPoint@/loader")
 
