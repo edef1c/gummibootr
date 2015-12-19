@@ -24,7 +24,7 @@ def add_entry(generation):
     tmp_path = "%s.tmp" % (entry_file)
     kernel_params = "systemConfig=%s init=%s/init " % (generation_dir, generation_dir)
     with open("%s/kernel-params" % (generation_dir)) as params_file:
-        kernel_params = kernel_params + params_file.read()
+        kernel_params += params_file.read()
     with tempfile.NamedTemporaryFile() as f_kernel_params, tempfile.NamedTemporaryFile() as f_os_release:
         print >> f_kernel_params, kernel_params
         f_kernel_params.flush()
