@@ -8,10 +8,6 @@ import glob
 import tempfile
 import errno
 
-def copy_if_not_exists(source, dest):
-    if not os.path.exists(dest):
-        shutil.copyfile(source, dest)
-
 system_dir = lambda generation: "/nix/var/nix/profiles/system-%d-link" % (generation)
 
 def db_sign(src, dst):
