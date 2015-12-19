@@ -17,6 +17,7 @@ let
     nix = config.nix.package;
 
     timeout = if cfg.timeout != null then cfg.timeout else "";
+    background = if cfg.background != null then cfg.background else "";
 
     inherit (efi) efiSysMountPoint canTouchEfiVariables;
 
@@ -47,6 +48,19 @@ in {
         key is pressed during bootup
       '';
     };
+
+    background = mkOption {
+      default = null;
+
+      example = "#ff0000";
+
+      type = types.nullOr types.string;
+
+      description = ''
+        Hex RGB background colour for the boot menu
+      '';
+    };
+
   };
 
   config = mkIf cfg.enable {

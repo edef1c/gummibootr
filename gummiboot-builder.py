@@ -53,6 +53,8 @@ def write_loader_conf(generation):
     with open("@efiSysMountPoint@/loader/loader.conf.tmp", 'w') as f:
         if "@timeout@" != "":
             print >> f, "timeout @timeout@"
+        if "@background@" != "":
+            print >> f, "background @background@"
         print >> f, "default nixos-generation-%d" % (generation)
     os.rename("@efiSysMountPoint@/loader/loader.conf.tmp", "@efiSysMountPoint@/loader/loader.conf")
 
