@@ -1,12 +1,10 @@
 #! @python@/bin/python
 import argparse
-import shutil
 import os
 import errno
 import subprocess
 import glob
 import tempfile
-import errno
 
 system_dir = lambda generation: "/nix/var/nix/profiles/system-%d-link" % (generation)
 
