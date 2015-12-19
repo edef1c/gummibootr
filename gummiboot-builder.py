@@ -82,14 +82,12 @@ parser = argparse.ArgumentParser(description='Update NixOS-related gummiboot fil
 parser.add_argument('default_config', metavar='DEFAULT-CONFIG', help='The default NixOS config to boot')
 args = parser.parse_args()
 
-# We deserve our own env var!
-if os.getenv("NIXOS_INSTALL_GRUB") == "1":
-    if "@canTouchEfiVariables@" == "1":
-        raise NotImplementedError("don't know how to twiddle EFI variables")
-    else:
-        mkdir_p("@efiSysMountPoint@/efi/boot")
-        # XXX: bootia32.efi is apparently a thing if you're on 32-bit UEFI. Does anyone even implement that?
-        db_sign("@gummiboot@/lib/gummiboot/gummibootx64.efi", "@efiSysMountPoint@/efi/boot/bootx64.efi")
+if "@canTouchEfiVariables@" == "1":
+    raise NotImplementedError("don't know how to twiddle EFI variables")
+else:
+    mkdir_p("@efiSysMountPoint@/efi/boot")
+    # XXX: bootia32.efi is apparently a thing if you're on 32-bit UEFI. Does anyone even implement that?
+    db_sign("@gummiboot@/lib/gummiboot/gummibootx64.efi", "@efiSysMountPoint@/efi/boot/bootx64.efi")
 
 mkdir_p("@efiSysMountPoint@/efi/linux")
 mkdir_p("@efiSysMountPoint@/loader")
