@@ -20,9 +20,9 @@ let
 
     inherit (efi) efiSysMountPoint canTouchEfiVariables;
 
-    efiArch = if stdenv.system == "x86_64-linux" then "x64"
-         else if stdenv.system == "i686-linux" then "ia32"
-         else throw "Unsupported system: ${stdenv.system}";
+    efiArch = if pkgs.gummiboot.system == "x86_64-linux" then "x64"
+         else if pkgs.gummiboot.system == "i686-linux" then "ia32"
+         else throw "Unsupported system: ${pkgs.gummiboot.system}";
   };
 in {
   options.boot.loader.gummibootr = {
