@@ -98,4 +98,4 @@ for gen in gens:
         write_loader_conf(gen)
 dead = set(glob.iglob("@efiSysMountPoint@/efi/linux/nixos-generation-[1-9]*.efi")) - live
 for path in dead:
-    os.unlink(dead)
+    os.unlink(path)
