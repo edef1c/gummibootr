@@ -3,7 +3,7 @@
 with lib;
 
 let
-  cfg = config.boot.loader.gummiboot;
+  cfg = config.boot.loader.gummibootr;
 
   efi = config.boot.loader.efi;
 
@@ -21,7 +21,7 @@ let
     inherit (efi) efiSysMountPoint canTouchEfiVariables;
   };
 in {
-  options.boot.loader.gummiboot = {
+  options.boot.loader.gummibootr = {
     enable = mkOption {
       default = false;
 
@@ -59,7 +59,7 @@ in {
     system = {
       build.installBootLoader = gummibootBuilder;
 
-      boot.loader.id = "gummiboot";
+      boot.loader.id = "gummibootr";
 
       requiredKernelConfig = with config.lib.kernelConfig; [
         (isYes "EFI_STUB")
