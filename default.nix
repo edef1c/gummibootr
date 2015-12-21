@@ -19,7 +19,7 @@ let
     timeout = if cfg.timeout != null then cfg.timeout else "";
     background = if cfg.background != null then cfg.background else "";
 
-    inherit (efi) efiSysMountPoint canTouchEfiVariables;
+    inherit (efi) efiSysMountPoint;
 
     efiArch = if pkgs.gummiboot.system == "x86_64-linux" then "x64"
          else if pkgs.gummiboot.system == "i686-linux" then "ia32"
@@ -69,6 +69,11 @@ in {
         assertion = (config.boot.kernelPackages.kernel.features or { efiBootStub = true; }) ? efiBootStub;
 
         message = "This kernel does not support the EFI boot stub";
+      }
+      {
+        assertion = !efi.canTouchEfiVariables;
+
+        message = "This bootloader doesn't support fiddling with EFI variables";
       }
     ];
 

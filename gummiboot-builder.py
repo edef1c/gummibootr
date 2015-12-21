@@ -81,11 +81,8 @@ parser = argparse.ArgumentParser(description='Update NixOS-related gummiboot fil
 parser.add_argument('default_config', metavar='DEFAULT-CONFIG', help='The default NixOS config to boot')
 args = parser.parse_args()
 
-if "@canTouchEfiVariables@" == "1":
-    raise NotImplementedError("don't know how to twiddle EFI variables")
-else:
-    mkdir_p("@efiSysMountPoint@/efi/boot")
-    db_sign("@gummiboot@/lib/gummiboot/gummiboot@efiArch@.efi", "@efiSysMountPoint@/efi/boot/boot@efiArch@.efi")
+mkdir_p("@efiSysMountPoint@/efi/boot")
+db_sign("@gummiboot@/lib/gummiboot/gummiboot@efiArch@.efi", "@efiSysMountPoint@/efi/boot/boot@efiArch@.efi")
 
 mkdir_p("@efiSysMountPoint@/efi/linux")
 mkdir_p("@efiSysMountPoint@/loader")
