@@ -7,6 +7,7 @@ import glob
 import tempfile
 
 system_dir = lambda generation: "/nix/var/nix/profiles/system-%d-link" % (generation)
+entry_file = lambda generation: "@efiSysMountPoint@/efi/linux/nixos-generation-%d.efi" % (generation)
 
 def db_sign(src, dst):
     tmp = "%s.signed" % (dst)
@@ -47,7 +48,6 @@ def add_entry(generation):
         db_sign(tmp_path, entry_file)
     finally:
         os.unlink(tmp_path)
-    return entry_file
 
 def write_loader_conf(generation):
     with open("@efiSysMountPoint@/loader/loader.conf.tmp", 'w') as f:
@@ -86,11 +86,11 @@ mkdir_p("@efiSysMountPoint@/efi/linux")
 mkdir_p("@efiSysMountPoint@/loader")
 
 gens = get_generations("system")
-live = set()
-for gen in gens:
-    live.add(add_entry(gen))
-    if os.readlink(system_dir(gen)) == args.default_config:
-        write_loader_conf(gen)
-dead = set(glob.iglob("@efiSysMountPoint@/efi/linux/nixos-generation-[1-9]*.efi")) - live
+live = map(entry_file, gens)
+dead = set(glob.iglob("@efiSysMountPoint@/efi/linux/nixos-generation-[1-9]*.efi")) - set(live)
 for path in dead:
     os.unlink(path)
+for gen in gens:
+    add_entry(gen)
+    if os.readlink(system_dir(gen)) == args.default_config:
+        write_loader_conf(gen)
