@@ -7,12 +7,15 @@ let
 
   efi = config.boot.loader.efi;
 
+  gummiboot = pkgs.callPackage ./gummiboot.nix {};
+
   gummibootBuilder = pkgs.substituteAll {
     src = ./gummiboot-builder.py;
 
     isExecutable = true;
 
-    inherit (pkgs) python gummiboot binutils sbsigntool;
+    inherit gummiboot;
+    inherit (pkgs) python binutils sbsigntool;
 
     nix = config.nix.package.out;
 
@@ -20,9 +23,9 @@ let
 
     inherit (efi) efiSysMountPoint;
 
-    efiArch = if pkgs.gummiboot.system == "x86_64-linux" then "x64"
-         else if pkgs.gummiboot.system == "i686-linux" then "ia32"
-         else throw "Unsupported system: ${pkgs.gummiboot.system}";
+    efiArch = if gummiboot.system == "x86_64-linux" then "x64"
+         else if gummiboot.system == "i686-linux" then "ia32"
+         else throw "Unsupported system: ${gummiboot.system}";
   };
 in {
   options.boot.loader.gummibootr = {
