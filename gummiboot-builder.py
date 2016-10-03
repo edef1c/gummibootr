@@ -41,7 +41,7 @@ def add_entry(generation):
             "--add-section", ".cmdline=%s"       % f_kernel_params.name, "--change-section-vma", ".cmdline=0x30000",
             "--add-section", ".linux=%s/kernel"  % generation_dir,       "--change-section-vma", ".linux=0x40000",
             "--add-section", ".initrd=%s/initrd" % generation_dir,       "--change-section-vma", ".initrd=0x3000000",
-            "@gummiboot@/lib/gummiboot/linux@efiArch@.efi.stub", tmp_path
+            "@systemd@/lib/systemd/boot/efi/linux@efiArch@.efi.stub", tmp_path
         ])
     subprocess.check_call(["@binutils@/bin/strip", tmp_path])
     try:
@@ -80,7 +80,7 @@ parser.add_argument('default_config', metavar='DEFAULT-CONFIG', help='The defaul
 args = parser.parse_args()
 
 mkdir_p("@efiSysMountPoint@/efi/boot")
-db_sign("@gummiboot@/lib/gummiboot/gummiboot@efiArch@.efi", "@efiSysMountPoint@/efi/boot/boot@efiArch@.efi")
+db_sign("@systemd@/lib/systemd/boot/efi/systemd-boot@efiArch@.efi", "@efiSysMountPoint@/efi/boot/boot@efiArch@.efi")
 
 mkdir_p("@efiSysMountPoint@/efi/linux")
 mkdir_p("@efiSysMountPoint@/loader")
